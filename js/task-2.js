@@ -27,15 +27,17 @@ const images = [
   },
 ];
 
-images.forEach((image) => {
-  const li = document.createElement("li");
-  li.classList.add("gallery-item");
-  const img = document.createElement("img");
-  img.src = `${image.url}`;
-  img.alt = `${image.alt}`;
-  li.append(img);
-  ul.append(li);
-});
+const galleryMarkup = images
+  .map((image) => {
+    return `
+      <li class="gallery-item">
+        <img class="gallery-image" src="${image.url}" alt="${image.alt}">
+      </li>
+    `;
+  })
+  .join("");
+
+ul.insertAdjacentHTML("beforeend", galleryMarkup);
 
 const imgLogic = () => {
   const html = ` <div class="modal-backdrop">
@@ -44,11 +46,17 @@ const imgLogic = () => {
         <img class="modal-img" src="#" alt="#">
       </div>
     </div>`;
+
   body.insertAdjacentHTML("beforeend", html);
+
   const img = document.querySelector(".modal-img");
   const modalBackDrop = document.querySelector(".modal-backdrop");
   const closeModal = document.querySelector(".close-modal-button");
+
   const handleImgClick = (e) => {
+    if (e.target.nodeName !== "IMG") {
+      return;
+    }
     const element = e.target;
     img.src = element.src;
     img.alt = element.alt;
@@ -63,7 +71,12 @@ const imgLogic = () => {
     }
     modalBackDrop.classList.remove("is-open");
   };
-
+  const handleOnBackDrop = (e) => {
+    if (e.target === modalBackDrop) {
+      modalBackDrop.classList.remove("is-open");
+    }
+  };
+  modalBackDrop.addEventListener("click", handleOnBackDrop);
   ul.addEventListener("click", handleImgClick);
   closeModal.addEventListener("click", handleCloseModal);
   document.addEventListener("keydown", handleCloseModalButton);
