@@ -3,7 +3,6 @@ const span = document.querySelector("#name-output");
 
 const handleInput = (e) => {
     e.preventDefault()
-    console.log(e.target.value)
   
     span.textContent = e.target.value.trim();
       if(span.textContent.length === 0){
